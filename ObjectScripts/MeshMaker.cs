@@ -8,7 +8,7 @@ public class MeshMaker : MonoBehaviour
     public bool addWormhole = true;
 
     [Range(3, 100)]
-    public int numSides = 6; // the numSides in the polygon (e.g. 6 means the cross-section is hexagonal)
+    public int numSides = 50; // the numSides in the polygon (e.g. 6 means the cross-section is hexagonal)
 
     [Min(0.01f)]
     public float length = 100; // the length of the polygonal cylinder
