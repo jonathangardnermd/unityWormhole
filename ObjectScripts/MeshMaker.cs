@@ -18,7 +18,7 @@ public class MeshMaker : MonoBehaviour
 
     [Range(0, 40)]
     public int numSplaySubdivisions = 20; // this controls how well the splay approximates a parabolic curve
-    public float totChangeInU = 1; // the size of the splay in the wormhole
+    public float totChangeInU = 10; // the size of the splay in the wormhole
 
 
     public void MakeMesh()
