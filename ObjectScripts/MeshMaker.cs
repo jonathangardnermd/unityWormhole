@@ -11,7 +11,7 @@ public class MeshMaker : MonoBehaviour
     public int numSides = 50; // the numSides in the polygon (e.g. 6 means the cross-section is hexagonal)
 
     [Min(0.01f)]
-    public float length = 100; // the length of the polygonal cylinder
+    public float length = 20; // the length of the polygonal cylinder
 
     [Min(0.01f)]
     public float polygonVertexRadius = 1; // the radius of the polygonal cylinder

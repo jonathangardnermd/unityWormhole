@@ -34,7 +34,7 @@ public class PolygonalCylinderSplay
             prevVertexRadius = nextVertexRadius;
             prevZ = nextZ;
         }
-        PolygonCylinder.StackPolygons(meshData, polygon, totSplayLength, nextVertexRadius, nextVertexRadius * 100, prevZ, prevZ);
+        PolygonCylinder.StackPolygons(meshData, polygon, totSplayLength, nextVertexRadius, nextVertexRadius * 10, prevZ, prevZ);
 
         if (Config.debugModeEnabled) PrintDebugInfo(meshData);
     }
