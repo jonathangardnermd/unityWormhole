@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.IO;
+using UnityEngine.UIElements;
 
 
 public class PolygonalCylinderSplay
@@ -10,31 +11,45 @@ public class PolygonalCylinderSplay
 
     public PolygonalCylinderSplay(Polygon polygon, float baseVertexRadius, SplayData splayData)
     {
-        this.polygon = polygon;
-        this.splayData = splayData;
-        this.baseVertexRadius = baseVertexRadius;
+        this.polygon = polygon; // the data 
+        this.splayData = splayData; // the pts that define the curve that begins parallel to the cylinder's sides and ends parallel to the plane
+        this.baseVertexRadius = baseVertexRadius; // the radius of the cylinder before any splaying
     }
 
+    /* 
+        This function will form the splay at the end of the cylinder, starting at z=0 and splaying into z>0.
+        The splay will be formed by stacking polygons of increasing radii as z grows larger, and the 
+        specific radii and z coords chosen will come from the "splayData", which calculates the radii
+        and z coords so that the splay is parabolic.
+    */
     public void AddPolygonalCylinderSplayToMesh(MeshData meshData)
     {
-        var baseVertexRadius = this.baseVertexRadius;
-        var prevVertexRadius = baseVertexRadius;
-        var prevZ = 0f;
+        var prevVertexRadius = baseVertexRadius; // initialize the radius of the "previous" polygon to be the radius of the cylinder.
+        var prevZ = 0f; // the original cylinder goes from z=-length to z=0, so the splay will start at z=0 and splay into z>0
 
-        float nextVertexRadius = 0f;
-        var totSplayLength = splayData.GetTotalChangeInY();
+        float nextVertexRadius = -1f; // nextVertexRadius will generally be larger than prevVertexRadius as we stack larger and larger polygons at higher z-coords in the splay
+        var totSplayLength = splayData.GetTotalChangeInY(); // the splay length in the z direction
         for (int splayLevel = 1; splayLevel <= this.splayData.numDivisions; splayLevel++)
         {
-            var sd = this.splayData.xyChanges[splayLevel];
-            nextVertexRadius = baseVertexRadius + sd.x;
+            var splayPt = splayData.xyChanges[splayLevel]; // get the amount of change in x and y (actually, x and z here) at this splay pt in the curved splay
 
-            var nextZ = sd.y;
+            // the splay pts contain the total x and y changes from the end of cylinder to the end of the "splayLevel"
+            // therefore, the radius at the end of this splayLevel is equal to splayPt.x plus the radius at the end of the cylinder (baseVertexRadius)
+            nextVertexRadius = baseVertexRadius + splayPt.x;
+            // and the nextZ coord is splayPt.y plus the z coordinate at the end of the cylinder (which is 0)
+            var nextZ = splayPt.y;
+
+            // generate the vertices and triangles for the mesh between these two polygons of different radii and different z-coords
             PolygonCylinder.StackPolygons(meshData, polygon, totSplayLength, prevVertexRadius, nextVertexRadius, prevZ, nextZ);
 
+            // stack the next polygon upon the polygon just stacked
             prevVertexRadius = nextVertexRadius;
             prevZ = nextZ;
         }
-        PolygonCylinder.StackPolygons(meshData, polygon, totSplayLength, nextVertexRadius, nextVertexRadius * 10, prevZ, prevZ);
+
+        // "stack" one more polygon at the same z coord as the last one in order to form the "plane".
+        int planeSizeFactor = 10;
+        PolygonCylinder.StackPolygons(meshData, polygon, totSplayLength, nextVertexRadius, nextVertexRadius * planeSizeFactor, prevZ, prevZ);
 
         if (Config.debugModeEnabled) PrintDebugInfo(meshData);
     }

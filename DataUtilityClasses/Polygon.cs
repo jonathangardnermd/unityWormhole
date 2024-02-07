@@ -9,7 +9,7 @@ public class Polygon
 
     private float angle;
 
-    public float vertexRadius;
+    // public float vertexRadius;
 
     public Polygon(int numSides)
     {
@@ -30,6 +30,7 @@ public class Polygon
 
         for (int i = 0; i < numSides; i++)
         {
+            // rotate the pt <1,0> by the rotationAngle = i * angle to form the ith vertex of the unit polygon
             float x = Mathf.Cos(i * angle);
             float y = Mathf.Sin(i * angle);
             vertices[i] = new Vector2(x, y);

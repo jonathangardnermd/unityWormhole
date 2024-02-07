@@ -31,12 +31,11 @@ public class MeshMaker : MonoBehaviour
 
     public void MakeCylinderMesh()
     {
+        // TODO: the length used to calculate the uvs of the cylinder and the splay should both be length+totChangeInU since they share the same material/texture
         if (Config.debugModeEnabled) Debug.Log("GenerateMesh invoked...");
-
 
         if (Config.debugModeEnabled) Debug.Log("Getting texture...");
         var texture = GetTexture();
-
         var meshData = new MeshData();
 
         if (Config.debugModeEnabled) Debug.Log("Getting mesh...");
